@@ -9,7 +9,7 @@ print("\n" * 10)
 
 # grab the sioux falls nws weather webpage
 url = 'https://forecast.weather.gov/MapClick.php?lat=43.57431&lon=-96.731297'
-response_html = ''
+response = ''
 if (not os.path.exists("src/nws.html")):
     print("Grabbing NWS Page\n")
     response = requests.get(url=url).text
@@ -36,13 +36,14 @@ forecast_list = long_forecast.findAll(class_="tombstone-container")
 
 # Get extended forecast
 
-print("\nExtended Forecast")
 forecast = []
 for i in forecast_list:
     period_name = i.find(class_="period-name").text
     temp = i.find(class_="temp").text.replace('Low: ', 'Low:  ')
     description = i.find(class_="short-desc").text
     forecast.append({"period_name": period_name, "temp": temp, "description": description})
+
+# Add current conditions to table
 forecast.insert(0, {"period_name": "Current", "temp": f"Now:  {temperature}", "description": current_forecast})
 
 df = pandas.DataFrame(forecast)
